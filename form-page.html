@@ -1,0 +1,306 @@
+<<<<<<< HEAD
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Запись на услугу | CapyBar & Spa</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css " />
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js "></script>
+
+  <!-- Inputmask -->
+  <script src="https://cdn.jsdelivr.net/npm/inputmask/dist/min/jquery.inputmask.bundle.min.js "></script>
+
+  <!-- Flatpickr -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr "></script>
+</head>
+<body>
+
+<div class="form-container">
+  <h2 id="booking-title">Запись на услугу</h2>
+  <div id="success-message" style="display: none;">
+    <p>✅ Запись успешно создана!</p>
+    <p>Вам придет уведомление в Telegram.</p>
+    <button onclick="window.location.href = '/'">Вернуться на главную</button>
+  </div>
+  <form id="appointment-form">
+    <label for="client-name">Ваше имя</label>
+    <input type="text" id="client-name" required>
+
+    <label for="contact-info">Номер для связи</label>
+    <input type="tel" id="contact-info" placeholder="+7 (___) ___-__-__" required>
+
+    <label for="client-telegram">Telegram</label>
+    <input type="text" id="client-telegram" placeholder="@ivanov или +79991234567" required>
+
+    <label for="service-select">Выбор услуги</label>
+    <select id="service-select" required>
+      <option value="" disabled selected>Выберите услугу</option>
+      <option value="herbal-nirvana">Травяная нирвана</option>
+      <option value="swamp-retreat">Болотный ретрит</option>
+      <option value="sunny-siesta">Солнечная сиеста</option>
+      <option value="friendship">Дружба без границ</option>
+      <option value="happy-tail">Хвостик из счастья</option>
+    </select>
+
+    <label for="appointment-date">Дата и время:</label>
+    <input type="text" id="appointment-date" placeholder="Выберите дату и время" required>
+
+    <button type="submit" class="form-btn">Записаться</button>
+  </form>
+</div>
+
+<script>
+  // Инициализация маски телефона
+  const phoneInput = document.getElementById("contact-info");
+  if (phoneInput && typeof Inputmask === 'function') {
+    Inputmask({
+      mask: "+7 (999) 999-99-99",
+      showMaskOnHover: false,
+      autoUnmask: true
+    }).mask(phoneInput);
+  } else {
+    console.error("Ошибка: Inputmask не загружен или поле не найдено");
+  }
+
+  // Инициализация Flatpickr
+  flatpickr("#appointment-date", {
+    enableTime: true,
+    dateFormat: "Y-m-d H:i",
+    time_24hr: true,
+    minDate: "today",
+    altInput: true,
+    altFormat: "j.m.Y H:i",
+    theme: "light",
+    locale: {
+      firstDayOfWeek: 1,
+      weekdays: {
+        shorthand: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+        longhand: [
+          "Воскресенье", "Понедельник", "Вторник", "Среда",
+          "Четверг", "Пятница", "Суббота"
+        ]
+      },
+      months: {
+        shorthand: ["Янв", "Фев", "Март", "Апр", "Май", "Июнь", "Июль", "Авг", "Сен", "Окт", "Ноя", "Дек"],
+        longhand: [
+          "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+          "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+        ]
+      }
+    }
+  });
+
+  // Обработчик отправки формы
+  document.getElementById("appointment-form").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const form = document.getElementById("appointment-form");
+    const successMessage = document.getElementById("success-message");
+    const bookingTitle = document.getElementById("booking-title");
+
+    if (!form || !successMessage || !bookingTitle) {
+      alert("Ошибка: один из элементов не найден");
+      return;
+    }
+
+    const name = document.getElementById("client-name").value.trim();
+    let contact = document.getElementById("contact-info").value.trim();
+    const telegram = document.getElementById("client-telegram").value.trim(); // ✅ Получаем Telegram
+    const service = document.getElementById("service-select").selectedOptions[0].innerText;
+    const date = document.getElementById("appointment-date").value.trim();
+
+    // Форматируем номер телефона
+    contact = contact.replace(/\D/g, '');
+    if (contact.startsWith('8') || contact.startsWith('7')) {
+      contact = contact.slice(1);
+    }
+    const formattedContact = '+7' + contact;
+
+    try {
+      const response = await fetch("http://localhost:3000/api/book", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name, contact: formattedContact, telegram, service, date }) // ✅ Отправляем Telegram
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        form.style.display = "none";
+        bookingTitle.style.display = "none";
+        successMessage.style.display = "block";
+      } else {
+        alert("Ошибка: " + (result.message || "Не удалось отправить форму"));
+      }
+    } catch (err) {
+      console.error('Network error:', err);
+      alert("Ошибка сети. Попробуйте позже.");
+    }
+  });
+</script>
+
+</body>
+</html>
+=======
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Запись на услугу | CapyBar & Spa</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/inputmask/dist/min/jquery.inputmask.bundle.min.js "></script>
+</head>
+<body>
+    
+    <div class="form-container">
+        <h2>Запись на услугу</h2>
+        <div id="success-message" style="display: none; color: green; font-weight: bold;">
+            Запись успешно создана!
+          </div>
+        <form id="appointment-form">
+            <label for="client-name">Ваше имя</label>
+            <input type="text" id="client-name" required>
+
+            <label for="contact-info">Номер для связи</label>
+            <input type="tel" id="contact-info" placeholder="+7 (___) ___-__-__" required>
+
+            <label for="service-select">Выбор услуги</label>
+            <select id="service-select" required>
+                <option value="" disabled selected>Выберите услугу</option>
+                <option value="herbal-nirvana">Травяная нирвана</option>
+                <option value="swamp-retreat">Болотный ретрит</option>
+                <option value="sunny-siesta">Солнечная сиеста</option>
+                <option value="friendship">Дружба без границ</option>
+                <option value="happy-tail">Хвостик из счастья</option>
+            </select>
+
+            <label for="appointment-date">Дата и время:</label>
+            <input type="text" id="appointment-date" placeholder="Выберите дату и время" required>
+
+            <button type="submit" class="form-btn">Записаться</button>
+        </form>
+    </div>
+    <script>
+        // Инициализация Flatpickr на поле ввода даты и времени
+        flatpickr("#appointment-date", {
+          enableTime: true,       // Включить выбор времени
+          dateFormat: "Y-m-d H:i",// Формат даты и времени
+          time_24hr: true,        // 24-часовой формат
+          minDate: "today",       // Минимальная дата — сегодня
+          placeholder: "Выберите дату и время",
+          altInput: true,
+          altFormat: "j.m.Y H:i", // Человеко-понятный формат отображения
+          theme: "light",
+          locale: {
+            firstDayOfWeek: 1,    // Начало недели с понедельника
+            weekdays: {
+              shorthand: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+              longhand: [
+                "Воскресенье",
+                "Понедельник",
+                "Вторник",
+                "Среда",
+                "Четверг",
+                "Пятница",
+                "Суббота",
+              ],
+            },
+            months: {
+              shorthand: [
+                "Янв",
+                "Фев",
+                "Март",
+                "Апр",
+                "Май",
+                "Июнь",
+                "Июль",
+                "Авг",
+                "Сен",
+                "Окт",
+                "Ноя",
+                "Дек",
+              ],
+              longhand: [
+                "Январь",
+                "Февраль",
+                "Март",
+                "Апрель",
+                "Май",
+                "Июнь",
+                "Июль",
+                "Август",
+                "Сентябрь",
+                "Октябрь",
+                "Ноябрь",
+                "Декабрь",
+              ],
+            },
+          },
+        });
+      </script>
+
+      <script>
+        // Инициализация маски ввода телефона
+        const phoneInput = document.getElementById("contact-info");
+        Inputmask({
+          mask: "+7 (999) 999-99-99",
+          showMaskOnHover: false,
+          autoUnmask: true
+        }).mask(phoneInput);
+      
+        // Отправка формы
+        document.getElementById("appointment-form").addEventListener("submit", async function(event) {
+          event.preventDefault();
+      
+          const form = document.getElementById("appointment-form");
+          const successMessage = document.getElementById("success-message");
+      
+          const name = document.getElementById("client-name").value;
+          let contact = document.getElementById("contact-info").value;
+      
+          // Удаляем все символы, кроме цифр
+          contact = contact.replace(/\D/g, '');
+      
+          // Добавляем +7, если не указан
+          if (contact && !contact.startsWith('7')) {
+            contact = '7' + contact;
+          }
+      
+          // Форматируем как +7...
+          const formattedContact = '+' + contact;
+      
+          const service = document.getElementById("service-select").selectedOptions[0].innerText;
+          const date = document.getElementById("appointment-date").value;
+      
+          const response = await fetch("http://localhost:3000/api/book", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name, contact: formattedContact, service, date })
+          });
+      
+          const result = await response.json();
+      
+          if (response.ok) {
+            form.style.display = "none";
+            successMessage.style.display = "block";
+          } else {
+            alert("Ошибка: " + (result.error || "Попробуйте позже"));
+          }
+        });
+      </script>
+
+     
+
+</body>
+</html>
+>>>>>>> dadc8527b86a9fb74b3c20aace384f7ec08f02d7
